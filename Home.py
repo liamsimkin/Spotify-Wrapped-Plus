@@ -72,8 +72,8 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 st.header("Top Tracks")
 st.markdown("Your top 50 tracks in the specified timeframe")
 
-timePeriod = st.selectbox("", ["4 weeks", "6 months", "1 year"])
-if timePeriod == "4 weeks":
+timePeriod = st.selectbox("", ["1 month", "6 months", "1 year"])
+if timePeriod == "1 month":
     timePeriod = "short_term"
 elif timePeriod == "6 months":
     timePeriod = "medium_term"

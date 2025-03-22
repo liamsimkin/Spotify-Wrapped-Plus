@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 import pandas as pd
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from collections import Counter
+import io
 
 load_dotenv()
 
@@ -69,11 +73,12 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-top-read user-read-recently-played"
 ))
 
+#----Top Artists----
 st.header("Top Artists")
 st.markdown("Your top 50 tracks in the specified timeframe")
 
-timePeriod = st.selectbox("", ["4 weeks", "6 months", "1 year"])
-if timePeriod == "4 weeks":
+timePeriod = st.selectbox("", ["1 month", "6 months", "1 year"])
+if timePeriod == "1 month":
     timePeriod = "short_term"
 elif timePeriod == "6 months":
     timePeriod = "medium_term"
@@ -97,7 +102,6 @@ with cols[0]:
         
         #album art
         with artistCols[0]:
-            #st.image(artistPicture, width=150)
             st.markdown(f"""
                 <div style='
                     width: 100px;
@@ -112,7 +116,6 @@ with cols[0]:
                     <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
                 </div>
             """, unsafe_allow_html=True)
-            #st.image(artistPicture, width=150)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
         #text
@@ -126,7 +129,7 @@ with cols[1]:
         artistPicture = artist['images'][0]['url']
         
         artistCols = st.columns([1, 4])
-        
+        #album art
         with artistCols[0]:
             st.markdown(f"""
                 <div style='
@@ -142,10 +145,8 @@ with cols[1]:
                     <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
                 </div>
             """, unsafe_allow_html=True)
-            #st.image(artistPicture, width=150)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
-
-
+        #text
         with artistCols[1]:
             st.markdown(f"{i}. {name}")
 
@@ -160,3 +161,22 @@ for artist in topArtists['items'][20:]:
 df = pd.DataFrame(data)
 df.index = df.index + 21 #table index
 st.dataframe(df, height = 500, row_height = 50)
+
+st.header("Top genres")
+#----Word Cloud----
+genres = []
+for artist in topArtists['items']:
+    genres.extend(artist['genres'])  # Some artists have multiple genres
+
+genre_counts = Counter(genres)
+
+#generate wordcloud
+wc = WordCloud(width=2000, height=1000, background_color='black', colormap='viridis')
+wc.generate_from_frequencies(genre_counts)
+
+#make it an image without border
+img_buffer = io.BytesIO()
+wc.to_image().save(img_buffer, format='PNG')
+img_buffer.seek(0)
+
+st.image(img_buffer, use_container_width=True)
