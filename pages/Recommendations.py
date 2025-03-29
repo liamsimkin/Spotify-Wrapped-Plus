@@ -66,36 +66,66 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+#sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+#    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+#    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
+#    redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
+#    scope="user-top-read user-read-recently-played user-library-read"
+#))
+
+sp_oauth = SpotifyOAuth(
     client_id=os.getenv("SPOTIPY_CLIENT_ID"),
     client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
     redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
-    scope="user-top-read user-read-recently-played"
-))
+    scope="user-top-read user-library-read playlist-modify-public playlist-modify-private"
+)
+
+sp = spotipy.Spotify(auth_manager=sp_oauth)
 
 #----Top Artists----
-st.header("Top Artists")
-st.markdown("Your top 50 tracks in the specified timeframe")
+st.header("Recommendations")
+st.markdown("Your recommendations")
 
-timePeriod = st.selectbox("", ["1 month", "6 months", "1 year"])
-if timePeriod == "1 month":
-    timePeriod = "short_term"
-elif timePeriod == "6 months":
-    timePeriod = "medium_term"
-else:
-    timePeriod = "long_term"
+top_artists = sp.current_user_top_artists(time_range="medium_term", limit=20)
 
-topArtists = sp.current_user_top_artists(time_range=timePeriod, limit=50)
+
+topArtists = sp.current_user_top_artists(time_range="long_term", limit=50)
+
+genres = []
+for artist in topArtists['items']:
+    genres.extend(artist['genres'])  # Some artists have multiple genres
+
+genre_counts = Counter(genres)
+genre_list = list(genre_counts.keys())[:5]
+#print(list(genre_counts.keys())[:5])
+recommended_artists = []
+
+for i in genre_list:
+# Example: Search for artists in the 'pop' genre
+    results = sp.search(q='genre:' + i, type='artist', limit=5)
+    # Print the artists found
+    for artist in results['artists']['items']:
+        recommended_artists.append(artist)
+        #print(f"Artist: {artist['name']} - {artist['external_urls']['spotify']}")
+
+#print(recommended_artists['artists']['items'][1])
+print(recommended_artists[1]['name'])
 
 cols = st.columns(2)
 
-first10 = topArtists['items'][:10]
-second10 = topArtists['items'][10:20]
+first10 = recommended_artists[:10]
+second10 = recommended_artists[10:20]
 
 # display first 10 artists
 with cols[0]:
     for i, artist in enumerate(first10, start=1):
         name = artist['name']
+        #url = artist['spotify']
+        genres = artist['genres']
+        if genres != []:
+            genres = genres[0]
+        else:
+            genres = ""
         artistPicture = artist['images'][0]['url']
         
         artistCols = st.columns([1, 4])
@@ -120,7 +150,11 @@ with cols[0]:
 
         #text
         with artistCols[1]:
-            st.markdown(f"**{i}. {name}**")
+            st.markdown(f"**{name}**")
+            if genres == "":
+                st.markdown(f"*n/a*")
+            else:
+                st.markdown(f"*{genres}*")
 
 # display 11-20 next to it
 with cols[1]:
@@ -148,35 +182,4 @@ with cols[1]:
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
         #text
         with artistCols[1]:
-            st.markdown(f"**{i}. {name}**")
-
-
-data = []
-for artist in topArtists['items'][20:]:
-    data.append({
-        "Name": artist['name'],
-        "Popularity": artist['popularity']
-    })
-
-df = pd.DataFrame(data)
-df.index = df.index + 21 #table index
-st.dataframe(df, height = 500, row_height = 50)
-
-st.header("Top genres")
-#----Word Cloud----
-genres = []
-for artist in topArtists['items']:
-    genres.extend(artist['genres'])  # Some artists have multiple genres
-
-genre_counts = Counter(genres)
-
-#generate wordcloud
-wc = WordCloud(width=2000, height=1000, background_color='black', colormap='viridis')
-wc.generate_from_frequencies(genre_counts)
-
-#make it an image without border
-img_buffer = io.BytesIO()
-wc.to_image().save(img_buffer, format='PNG')
-img_buffer.seek(0)
-
-st.image(img_buffer, use_container_width=True)
+            st.markdown(f"{name}")
