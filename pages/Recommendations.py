@@ -84,21 +84,20 @@ sp = spotipy.Spotify(auth_manager=sp_oauth)
 
 #----Top Artists----
 st.header("Recommendations")
-st.markdown("Your recommendations")
+st.markdown("Recommended artists - based on your listening")
 
-top_artists = sp.current_user_top_artists(time_range="medium_term", limit=20)
+button_placeholder = st.empty()
 
-
-topArtists = sp.current_user_top_artists(time_range="long_term", limit=50)
+top_artists = sp.current_user_top_artists(time_range="long_term", limit=50)
 
 genres = []
-for artist in topArtists['items']:
+for artist in top_artists['items']:
     genres.extend(artist['genres'])  # Some artists have multiple genres
 
 genre_counts = Counter(genres)
 genre_list = list(genre_counts.keys())[:5]
-#print(list(genre_counts.keys())[:5])
 recommended_artists = []
+recommended_tracks = []
 
 for i in genre_list:
 # Example: Search for artists in the 'pop' genre
@@ -106,10 +105,9 @@ for i in genre_list:
     # Print the artists found
     for artist in results['artists']['items']:
         recommended_artists.append(artist)
-        #print(f"Artist: {artist['name']} - {artist['external_urls']['spotify']}")
-
-#print(recommended_artists['artists']['items'][1])
-print(recommended_artists[1]['name'])
+        top_track_list = sp.artist_top_tracks(artist['id'])
+        top_track = [(track["name"], track["uri"]) for track in top_track_list["tracks"][:1]]
+        recommended_tracks.append(top_track)
 
 cols = st.columns(2)
 
@@ -120,7 +118,6 @@ second10 = recommended_artists[10:20]
 with cols[0]:
     for i, artist in enumerate(first10, start=1):
         name = artist['name']
-        #url = artist['spotify']
         genres = artist['genres']
         if genres != []:
             genres = genres[0]
@@ -150,17 +147,30 @@ with cols[0]:
 
         #text
         with artistCols[1]:
-            st.markdown(f"**{name}**")
-            if genres == "":
-                st.markdown(f"*n/a*")
-            else:
-                st.markdown(f"*{genres}*")
+            st.markdown(f"""**{name}**  
+            *{genres if genres else 'n/a'}*  
+            <a href="https://open.spotify.com/track/{recommended_tracks[i-1][0][1].split(':')[-1]}" target="_blank" style="text-decoration: none; color: #1DB954;">
+            🎧 {recommended_tracks[i-1][0][0]}
+            </a>
+            """, unsafe_allow_html=True)      
+            
+            
+            #if genres == "":
+            #    st.markdown(f"*n/a*")
+            #else:
+            #    st.markdown(f"*{genres}*")
+            #st.markdown(f"[🎵 {track[i][0]}]({track[i][1].replace('spotify:track:', 'https://open.spotify.com/track/')})")
 
 # display 11-20 next to it
 with cols[1]:
     for i, artist in enumerate(second10, start=11):
         name = artist['name']
         artistPicture = artist['images'][0]['url']
+        genres = artist['genres']
+        if genres != []:
+            genres = genres[0]
+        else:
+            genres = ""
         
         artistCols = st.columns([1, 4])
         #album art
@@ -182,4 +192,26 @@ with cols[1]:
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
         #text
         with artistCols[1]:
-            st.markdown(f"{name}")
+            st.markdown(f"""**{name}**  
+            *{genres if genres else 'n/a'}*  
+            <a href="https://open.spotify.com/track/{recommended_tracks[i-1][0][1].split(':')[-1]}" target="_blank" style="text-decoration: none; color: #1DB954;">
+            🎧 {recommended_tracks[i-1][0][0]}
+            </a>
+            """, unsafe_allow_html=True) 
+
+def createRecommendedPlaylist():
+    print("b")
+    user_id = sp.current_user()["id"]
+
+    playlist_name = "Recommended Tracks"
+    playlist_desc = "My recommended tracks from Wrapped+"
+
+    playlist = sp.user_playlist_create(user_id, playlist_name, public=True, description=playlist_desc)
+    #for track in recommended_tracks:
+    #    sp.playlist_add_items(playlist["id"], track[0][1].split(':')[-1])
+
+    track_uris = [track[0][1].split(':')[-1] for track in recommended_tracks]  # Extract the full URIs
+    sp.playlist_add_items(playlist["id"], track_uris)
+
+if button_placeholder.button("🎵 Create Playlist"):
+    createRecommendedPlaylist()

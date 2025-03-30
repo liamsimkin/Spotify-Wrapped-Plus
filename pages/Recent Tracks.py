@@ -121,9 +121,8 @@ for item in recent_tracks['items'][20:]:
     data.append({
         "Track": track['name'],
         "Artist": track['artists'][0]['name'],
-        "Album": track['album']['name'],
-        "Popularity": track['popularity']
-    })
+        "Album": track['album']['name']
+        })
 
 df = pd.DataFrame(data)
 df.index = df.index + 21 #table index

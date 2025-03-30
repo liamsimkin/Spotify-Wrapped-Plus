@@ -75,7 +75,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 
 #----Top Artists----
 st.header("Top Artists")
-st.markdown("Your top 50 tracks in the specified timeframe")
+st.markdown("Your top 50 artists in the specified timeframe")
 
 timePeriod = st.selectbox("", ["1 month", "6 months", "1 year"])
 if timePeriod == "1 month":
