@@ -13,6 +13,7 @@ load_dotenv()
 
 st.set_page_config(
     page_title="Wrapped+",
+    page_icon="favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -213,5 +214,6 @@ def createRecommendedPlaylist():
     track_uris = [track[0][1].split(':')[-1] for track in recommended_tracks]  # Extract the full URIs
     sp.playlist_add_items(playlist["id"], track_uris)
 
-if button_placeholder.button("🎵 Create Playlist"):
+if button_placeholder.button("🎵 Create playlist on your account"):
     createRecommendedPlaylist()
+    st.toast("🎵 Playlist created!", icon="🎶")

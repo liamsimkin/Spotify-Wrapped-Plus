@@ -9,6 +9,7 @@ load_dotenv()
 
 st.set_page_config(
     page_title="Wrapped+",
+    page_icon="favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -24,7 +25,7 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Your Spotify Insights
+        🎵 Wrapped+ | Your Spotify Insights
     </div>
     <style>
         .main {

@@ -13,6 +13,7 @@ load_dotenv()
 
 st.set_page_config(
     page_title="Wrapped+",
+    page_icon="favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
 )
