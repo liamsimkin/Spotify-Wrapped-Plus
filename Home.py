@@ -6,9 +6,11 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 from loginAuth import get_spotify_client
+#import shutil
 
 
 load_dotenv()
+#os.environ['STREAMLIT_CACHE_DIR'] = '/dev/null'
 
 st.set_page_config(
     page_title="Wrapped+",
