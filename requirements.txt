@@ -1,4 +1,6 @@
 streamlit
 spotipy
-python-dotenv
 pandas
+python-dotenv
+wordcloud
+matplotlib
