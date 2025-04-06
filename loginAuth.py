@@ -12,6 +12,9 @@ def login_spotify():
         cache_handler = spotipy.cache_handler.MemoryCacheHandler()
     )
 
+    if "spotify_token" in st.session_state:
+        return spotipy.Spotify(auth=st.session_state.spotify_token)
+    
     query_params = st.experimental_get_query_params()
     code = query_params.get("code", [None])[0]
 
