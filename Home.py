@@ -66,6 +66,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.write("Client ID:", os.getenv("SPOTIPY_CLIENT_ID"))
+st.write("Client Secret:", os.getenv("SPOTIPY_CLIENT_SECRET"))
+st.write("Redirect URI:", os.getenv("SPOTIPY_REDIRECT_URI"))
 
 # if "token_info" not in st.session_state:
 

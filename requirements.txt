@@ -2,5 +2,3 @@ streamlit
 spotipy
 python-dotenv
 pandas
-dotenv
-os
