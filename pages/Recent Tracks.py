@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 import pandas as pd
+from loginAuth import get_spotify_client
+
 
 load_dotenv()
 
@@ -63,12 +65,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
-    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
-    redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
-    scope="user-top-read user-read-recently-played"
-))
+# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+#     client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+#     client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
+#     redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
+#     scope="user-top-read user-read-recently-played"
+# ))
+
+sp = get_spotify_client()
+user = sp.current_user()
+
+st.write(f"Logged in as: {user['display_name']}")
 
 st.header("Recent Listening")
 st.markdown("Your 50 most recently listened to tracks")

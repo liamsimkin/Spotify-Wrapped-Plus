@@ -8,6 +8,8 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 import io
+from loginAuth import get_spotify_client
+
 
 load_dotenv()
 
@@ -67,12 +69,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
-    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
-    redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
-    scope="user-top-read user-read-recently-played"
-))
+# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
+#     client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+#     client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
+#     redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
+#     scope="user-top-read user-read-recently-played"
+# ))
+
+sp = get_spotify_client()
+user = sp.current_user()
+
+st.write(f"Logged in as: {user['display_name']}")
 
 #----Top Artists----
 st.header("Top Artists")
