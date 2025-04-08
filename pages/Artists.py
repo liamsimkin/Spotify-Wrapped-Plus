@@ -1,17 +1,9 @@
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-from dotenv import load_dotenv
-import os
 import streamlit as st
 import pandas as pd
 from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 from collections import Counter
 import io
 from loginAuth import get_spotify_client
-
-
-load_dotenv()
 
 st.set_page_config(
     page_title="Wrapped+",
@@ -31,7 +23,7 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Your Spotify Insights
+        🎵 Wrapped+ Spotify Stats
     </div>
     <style>
         .main {
@@ -69,17 +61,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-#     client_id=os.getenv("SPOTIPY_CLIENT_ID"),
-#     client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
-#     redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
-#     scope="user-top-read user-read-recently-played"
-# ))
-
+#login and get details
 sp = get_spotify_client()
 user = sp.current_user()
-
-st.write(f"Logged in as: {user['display_name']}")
 
 #----Top Artists----
 st.header("Top Artists")
@@ -96,7 +80,6 @@ else:
 topArtists = sp.current_user_top_artists(time_range=timePeriod, limit=50)
 
 cols = st.columns(2)
-
 first10 = topArtists['items'][:10]
 second10 = topArtists['items'][10:20]
 
@@ -105,7 +88,6 @@ with cols[0]:
     for i, artist in enumerate(first10, start=1):
         name = artist['name']
         artistPicture = artist['images'][0]['url']
-        
         artistCols = st.columns([1, 4])
         
         #album art
@@ -158,20 +140,20 @@ with cols[1]:
         with artistCols[1]:
             st.markdown(f"**{i}. {name}**")
 
-
+#21-50 in a table
 data = []
 for artist in topArtists['items'][20:]:
     data.append({
         "Name": artist['name'],
-        "Popularity": artist['popularity']
+        "Genres": artist['genres']
     })
 
 df = pd.DataFrame(data)
 df.index = df.index + 21 #table index
 st.dataframe(df, height = 500, row_height = 50)
 
-st.header("Top genres")
 #----Word Cloud----
+st.header("Top genres")
 genres = []
 for artist in topArtists['items']:
     genres.extend(artist['genres'])  # Some artists have multiple genres
