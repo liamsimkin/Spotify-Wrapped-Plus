@@ -23,7 +23,7 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Spotify Stats
+        🎵 Wrapped+ Music Stats
     </div>
     <style>
         .main {
@@ -90,12 +90,21 @@ with cols[0]:
         name = track['name']
         artist = track['artists'][0]['name']
         albumCover = track['album']['images'][0]['url']
-            
+        url = track['external_urls']['spotify']
+
         track_cols = st.columns([1, 4])
             
         #album art
         with track_cols[0]:
-            st.image(albumCover, width=150) 
+            st.markdown(
+                f"""
+                <a href="{url}" target="_blank">
+                    <img src="{albumCover}" width="150" style="border-radius: 4px;" />
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
         #text
         with track_cols[1]:
@@ -107,12 +116,21 @@ with cols[1]:
         name = track['name']
         artist = track['artists'][0]['name']
         albumCover = track['album']['images'][0]['url']
+        url = track['external_urls']['spotify']
             
         track_cols = st.columns([1, 4])
         
         #album art
         with track_cols[0]:
-            st.image(albumCover, width=150)
+            st.markdown(
+                f"""
+                <a href="{url}" target="_blank">
+                    <img src="{albumCover}" width="150" style="border-radius: 4px;" />
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+            st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
         #text
         with track_cols[1]:
@@ -124,9 +142,12 @@ for track in topTracks['items'][20:]:
     data.append({
         "Track": track['name'],
         "Artist": track['artists'][0]['name'],
-        "Album": track['album']['name']
+        "Album": track['album']['name'],
+        "URL": track['external_urls']['spotify']
     })
 
 df = pd.DataFrame(data)
 df.index = df.index + 21 #table index
 st.dataframe(df, height = 500, row_height = 50)
+
+st.markdown("Content provided by Spotify")

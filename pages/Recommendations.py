@@ -13,14 +13,14 @@ st.markdown("""
     <div style='
         background-color: #1DB954;
         padding: 1rem;
-        border-radius: 10px;
+        border-radius: 4px;
         text-align: center;
         color: white;
         font-size: 2rem;
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Spotify Stats
+        🎵 Wrapped+ Music Stats
     </div>
     <style>
         .main {
@@ -104,24 +104,27 @@ with cols[0]:
         else:
             genres = ""
         artistPicture = artist['images'][0]['url']
-        
+        url = artist['external_urls']['spotify']
+
         artistCols = st.columns([1, 4])
         
         #album art
         with artistCols[0]:
             st.markdown(f"""
-                <div style='
-                    width: 100px;
-                    height: 100px;
-                    overflow: hidden;
-                    border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #1e1e1e;
-                '>
-                    <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
-                </div>
+                <a href="{url}" target="_blank" style="text-decoration: none;">
+                    <div style='
+                        width: 100px;
+                        height: 100px;
+                        overflow: hidden;
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: #1e1e1e;
+                    '>
+                        <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
+                    </div>
+                </a>
             """, unsafe_allow_html=True)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
@@ -145,22 +148,25 @@ with cols[1]:
         else:
             genres = ""
         
+        url = artist['external_urls']['spotify']
         artistCols = st.columns([1, 4])
         #album art
         with artistCols[0]:
             st.markdown(f"""
-                <div style='
-                    width: 100px;
-                    height: 100px;
-                    overflow: hidden;
-                    border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #1e1e1e;
-                '>
-                    <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
-                </div>
+                <a href="{url}" target="_blank" style="text-decoration: none;">
+                    <div style='
+                        width: 100px;
+                        height: 100px;
+                        overflow: hidden;
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: #1e1e1e;
+                    '>
+                        <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
+                    </div>
+                </a>
             """, unsafe_allow_html=True)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
         #text
@@ -188,3 +194,5 @@ def createRecommendedPlaylist():
 if button_placeholder.button("🎵 Create playlist on your account"):
     createRecommendedPlaylist()
     st.toast("🎵 Playlist created!", icon="🎶")
+
+st.markdown("Content provided by Spotify")

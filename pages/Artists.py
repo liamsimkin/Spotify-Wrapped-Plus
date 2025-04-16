@@ -23,7 +23,7 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Spotify Stats
+        🎵 Wrapped+ Music Stats
     </div>
     <style>
         .main {
@@ -88,23 +88,27 @@ with cols[0]:
     for i, artist in enumerate(first10, start=1):
         name = artist['name']
         artistPicture = artist['images'][0]['url']
+        url = artist['external_urls']['spotify']
+
         artistCols = st.columns([1, 4])
         
         #album art
         with artistCols[0]:
             st.markdown(f"""
-                <div style='
-                    width: 100px;
-                    height: 100px;
-                    overflow: hidden;
-                    border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #1e1e1e;
-                '>
-                    <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
-                </div>
+                <a href="{url}" target="_blank" style="text-decoration: none;">
+                    <div style='
+                        width: 100px;
+                        height: 100px;
+                        overflow: hidden;
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: #1e1e1e;
+                    '>
+                        <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
+                    </div>
+                </a>
             """, unsafe_allow_html=True)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
@@ -117,25 +121,29 @@ with cols[1]:
     for i, artist in enumerate(second10, start=11):
         name = artist['name']
         artistPicture = artist['images'][0]['url']
-        
+        url = artist['external_urls']['spotify']
+
         artistCols = st.columns([1, 4])
         #album art
         with artistCols[0]:
             st.markdown(f"""
-                <div style='
-                    width: 100px;
-                    height: 100px;
-                    overflow: hidden;
-                    border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #1e1e1e;
-                '>
-                    <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
-                </div>
+                <a href="{url}" target="_blank" style="text-decoration: none;">
+                    <div style='
+                        width: 100px;
+                        height: 100px;
+                        overflow: hidden;
+                        border-radius: 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background-color: #1e1e1e;
+                    '>
+                        <img src="{artistPicture}" style="height: 100%; object-fit: cover;">
+                    </div>
+                </a>
             """, unsafe_allow_html=True)
             st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
+
         #text
         with artistCols[1]:
             st.markdown(f"**{i}. {name}**")
@@ -145,7 +153,8 @@ data = []
 for artist in topArtists['items'][20:]:
     data.append({
         "Name": artist['name'],
-        "Genres": artist['genres']
+        "Genres": artist['genres'],
+        "URL": artist['external_urls']['spotify']
     })
 
 df = pd.DataFrame(data)
@@ -170,3 +179,5 @@ wc.to_image().save(img_buffer, format='PNG')
 img_buffer.seek(0)
 
 st.image(img_buffer, use_container_width=True)
+
+st.markdown("Content provided by Spotify")
