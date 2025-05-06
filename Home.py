@@ -6,7 +6,7 @@ from loginAuth import get_spotify_client
 load_dotenv()
 
 st.set_page_config(
-    page_title="Wrapped+",
+    page_title="Track Stats",
     page_icon="favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -23,7 +23,7 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 2rem;
     '>
-        🎵 Wrapped+ Music Stats
+        🎵 Track Stats - Your Music Stats
     </div>
     <style>
         .main {
