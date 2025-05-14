@@ -8,7 +8,7 @@ def login_spotify():
         client_id=os.getenv("SPOTIPY_CLIENT_ID"),
         client_secret=os.getenv("SPOTIPY_CLIENT_SECRET"),
         redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI"),
-        scope="user-library-read user-top-read user-read-recently-played playlist-modify-public playlist-modify-private",
+        scope="user-top-read user-read-recently-played playlist-modify-public",
         cache_handler = spotipy.cache_handler.MemoryCacheHandler()
     )
 
