@@ -184,7 +184,7 @@ def createRecommendedPlaylist():
     user_id = sp.current_user()["id"]
 
     playlist_name = "Recommended Tracks"
-    playlist_desc = "My recommended tracks from Wrapped+"
+    playlist_desc = "My recommended tracks from Track Stats"
 
     playlist = sp.user_playlist_create(user_id, playlist_name, public=True, description=playlist_desc)
 
